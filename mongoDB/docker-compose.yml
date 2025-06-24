@@ -1,0 +1,60 @@
+# This docker-compose file sets up a MongoDB replica set with three nodes.
+# Each MongoDB instance is configured to run in a separate container.
+services:
+  mongo1:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongo1
+    ports:
+      - 27017:27017
+    networks:
+      - mongoCluster
+    volumes:
+      - /c/Users/macko/mongo1:/data/db
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+
+  mongo2:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongo2
+    ports:
+      - 27018:27017
+    networks:
+      - mongoCluster
+    volumes:
+      - /c/Users/macko/mongo2:/data/db
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+
+  mongo3:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongo3
+    ports:
+      - 27019:27017
+    networks:
+      - mongoCluster
+    volumes:
+      - /c/Users/macko/mongo3:/data/db
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+
+
+  # mongo-setup:
+  #   image: mongodb/mongodb-community-server:latest
+  #   container_name: mongo-setup
+  #   depends_on:
+  #     - mongo1
+  #     - mongo2
+  #     - mongo3
+  #   networks:
+  #     - mongoCluster
+  #   volumes:
+  #     - /c/Users/macko/mongo-setup:/data/db
+  #   entrypoint: ["sh", "-c", "sleep 20 && mongo mongo1:27017 /init-replica.js"]
+
+
+volumes:
+  mongo1-data:
+  mongo2-data:
+  mongo3-data:
+
+networks:
+  mongoCluster:
+    name: mongoCluster  # <<<<<< jawna nazwa
+    driver: bridge
